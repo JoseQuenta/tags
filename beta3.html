@@ -1,0 +1,124 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa Interactivo Mejorado</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch/dist/geosearch.css" />
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+      margin: 20px 0;
+    }
+    .coordinates {
+      margin-top: 10px;
+    }
+    input, button {
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mapa Interactivo Optimizado</h1>
+  <div id="map"></div>
+
+  <div class="coordinates">
+    <label>Latitud: <input type="text" id="latitude" readonly /></label>
+    <label>Longitud: <input type="text" id="longitude" readonly /></label>
+  </div>
+
+  <button id="locateMeButton">Centrar en mi ubicación</button>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-geosearch"></script>
+  <script>
+    // Inicializar el mapa centrado en Tacna
+    const map = L.map('map').setView([-17.93, -70.51], 13); // Coordenadas iniciales de Tacna
+
+    // Capas base
+    const baseLayers = {
+      'Mapa Callejero': L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+      }).addTo(map),
+
+      'Mapa Satelital': L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors | HOT'
+      })
+    };
+
+    // Control de capas
+    L.control.layers(baseLayers).addTo(map);
+
+    // Marcador dinámico
+    let marker;
+    map.on('click', function (e) {
+      const { lat, lng } = e.latlng;
+
+      // Actualizar marcador
+      if (marker) {
+        marker.setLatLng(e.latlng);
+      } else {
+        marker = L.marker(e.latlng).addTo(map);
+      }
+
+      // Actualizar coordenadas
+      document.getElementById('latitude').value = lat.toFixed(6);
+      document.getElementById('longitude').value = lng.toFixed(6);
+    });
+
+    // Geolocalización
+    const locateMeButton = document.getElementById('locateMeButton');
+    locateMeButton.addEventListener('click', () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const { latitude, longitude } = position.coords;
+          map.setView([latitude, longitude], 15);
+
+          // Agregar marcador
+          if (marker) {
+            marker.setLatLng([latitude, longitude]);
+          } else {
+            marker = L.marker([latitude, longitude]).addTo(map);
+          }
+
+          // Actualizar coordenadas
+          document.getElementById('latitude').value = latitude.toFixed(6);
+          document.getElementById('longitude').value = longitude.toFixed(6);
+        }, () => {
+          alert('No se pudo acceder a tu ubicación.');
+        });
+      } else {
+        alert('Geolocalización no soportada por tu navegador.');
+      }
+    });
+
+    // Geocodificador con Autocompletado
+    const geocoder = new GeoSearch.GeoSearchControl({
+      provider: new GeoSearch.OpenStreetMapProvider(),
+      style: 'bar',
+      updateMap: true,
+      autoClose: true,
+      keepResult: true
+    });
+
+    map.addControl(geocoder);
+
+    map.on('geosearch/showlocation', function(result) {
+      const { x: lng, y: lat } = result.location;
+
+      // Mover el marcador al resultado de la búsqueda
+      if (marker) {
+        marker.setLatLng([lat, lng]);
+      } else {
+        marker = L.marker([lat, lng]).addTo(map);
+      }
+
+      // Actualizar coordenadas
+      document.getElementById('latitude').value = lat.toFixed(6);
+      document.getElementById('longitude').value = lng.toFixed(6);
+    });
+  </script>
+</body>
+</html> -->

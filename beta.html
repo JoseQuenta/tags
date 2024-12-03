@@ -1,0 +1,160 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marcar Imagen con Información</title>
+  <style>
+    .image-container {
+      margin: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+    canvas {
+      display: block;
+      margin: 10px auto;
+      border: 1px solid #ddd;
+    }
+    input, button {
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Marcar Imagen con Información</h1>
+  <input type="file" id="fileInput" accept="image/*" />
+  <div id="gallery"></div>
+
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const gallery = document.getElementById('gallery');
+
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          const img = new Image();
+          img.src = e.target.result;
+
+          img.onload = () => {
+            // Crear un canvas con las dimensiones de la imagen
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            // Dibujar la imagen en el canvas
+            ctx.drawImage(img, 0, 0);
+
+            // Crear el contenedor para la interfaz
+            const container = document.createElement('div');
+            container.className = 'image-container';
+
+            // Campos para los valores
+            const latInput = document.createElement('input');
+            latInput.type = 'text';
+            latInput.placeholder = 'Latitud';
+
+            const longInput = document.createElement('input');
+            longInput.type = 'text';
+            longInput.placeholder = 'Longitud';
+
+            const dateInput = document.createElement('input');
+            dateInput.type = 'date';
+
+            const timeInput = document.createElement('input');
+            timeInput.type = 'time';
+
+            const placeInput = document.createElement('input');
+            placeInput.type = 'text';
+            placeInput.placeholder = 'Lugar';
+
+            const cityInput = document.createElement('input');
+            cityInput.type = 'text';
+            cityInput.placeholder = 'Ciudad';
+
+            // Botón para marcar la imagen
+            const markButton = document.createElement('button');
+            markButton.textContent = 'Marcar Imagen';
+
+            markButton.addEventListener('click', () => {
+              ctx.drawImage(img, 0, 0); // Redibujar la imagen base
+
+              ctx.font = '60px Arial'; // Tamaño más grande
+              ctx.fillStyle = 'white';
+              ctx.textAlign = 'right'; // Alineado al lado derecho
+              ctx.shadowColor = 'black'; // Sombra negra
+              ctx.shadowBlur = 4;
+              ctx.shadowOffsetX = 2;
+              ctx.shadowOffsetY = 2;
+
+              const padding = 30; // Espaciado entre líneas
+              let y = canvas.height - 200; // Posición inicial vertical desde abajo
+              const x = canvas.width - 20; // Pegado al lado derecho con un margen de 20px
+
+              if (latInput.value) {
+                ctx.fillText(`Latitud: ${latInput.value}`, x, y);
+                y += padding;
+              }
+
+              if (longInput.value) {
+                ctx.fillText(`Longitud: ${longInput.value}`, x, y);
+                y += padding;
+              }
+
+              if (dateInput.value) {
+                ctx.fillText(`Fecha: ${dateInput.value}`, x, y);
+                y += padding;
+              }
+
+              if (timeInput.value) {
+                ctx.fillText(`Hora: ${timeInput.value}`, x, y);
+                y += padding;
+              }
+
+              if (placeInput.value) {
+                ctx.fillText(`Lugar: ${placeInput.value}`, x, y);
+                y += padding;
+              }
+
+              if (cityInput.value) {
+                ctx.fillText(`Ciudad: ${cityInput.value}`, x, y);
+              }
+            });
+
+            // Botón para descargar la imagen marcada
+            const downloadButton = document.createElement('button');
+            downloadButton.textContent = 'Descargar Imagen';
+            downloadButton.addEventListener('click', () => {
+              const link = document.createElement('a');
+              link.download = 'imagen-marcada.png';
+              link.href = canvas.toDataURL();
+              link.click();
+            });
+
+            // Agregar todo al contenedor
+            container.appendChild(canvas);
+            container.appendChild(latInput);
+            container.appendChild(longInput);
+            container.appendChild(dateInput);
+            container.appendChild(timeInput);
+            container.appendChild(placeInput);
+            container.appendChild(cityInput);
+            container.appendChild(markButton);
+            container.appendChild(downloadButton);
+
+            gallery.innerHTML = ''; // Limpiar la galería antes de agregar una nueva imagen
+            gallery.appendChild(container);
+          };
+        };
+
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+</html> -->

@@ -1,0 +1,113 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa Interactivo con Buscador</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+      margin: 20px 0;
+    }
+    .search-container {
+      margin-bottom: 10px;
+    }
+    input, button {
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Seleccionar Ubicación en el Mapa</h1>
+
+  <div class="search-container">
+    <input type="text" id="searchBox" placeholder="Buscar lugar o dirección..." />
+    <button id="searchButton">Buscar</button>
+  </div>
+
+  <div id="map"></div>
+
+  <div class="coordinates">
+    <label>Latitud: <input type="text" id="latitude" readonly /></label>
+    <label>Longitud: <input type="text" id="longitude" readonly /></label>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Inicializar el mapa centrado en Tacna
+    const map = L.map('map').setView([-17.93, -70.51], 13); // Coordenadas de Tacna
+
+    // Agregar el tile de OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Crear un marcador que se mueve al hacer clic
+    let marker;
+
+    map.on('click', function (e) {
+      const { lat, lng } = e.latlng;
+
+      // Actualizar el marcador
+      if (marker) {
+        marker.setLatLng(e.latlng);
+      } else {
+        marker = L.marker(e.latlng).addTo(map);
+      }
+
+      // Actualizar los campos de coordenadas
+      document.getElementById('latitude').value = lat.toFixed(6);
+      document.getElementById('longitude').value = lng.toFixed(6);
+    });
+
+    // Funcionalidad del buscador
+    const searchBox = document.getElementById('searchBox');
+    const searchButton = document.getElementById('searchButton');
+
+    searchButton.addEventListener('click', () => {
+      const query = searchBox.value;
+
+      if (!query) {
+        alert('Por favor, escribe un lugar o dirección.');
+        return;
+      }
+
+      // Llamar a la API de Nominatim para buscar el lugar
+      fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.length === 0) {
+            alert('No se encontró ningún lugar con esa descripción.');
+            return;
+          }
+
+          // Obtener la primera coincidencia
+          const { lat, lon, display_name } = data[0];
+
+          // Mover el mapa al lugar encontrado
+          map.setView([lat, lon], 15);
+
+          // Actualizar el marcador
+          if (marker) {
+            marker.setLatLng([lat, lon]);
+          } else {
+            marker = L.marker([lat, lon]).addTo(map);
+          }
+
+          // Actualizar los campos de coordenadas
+          document.getElementById('latitude').value = parseFloat(lat).toFixed(6);
+          document.getElementById('longitude').value = parseFloat(lon).toFixed(6);
+
+          // Opcional: Mostrar el nombre del lugar
+          alert(`Ubicación encontrada: ${display_name}`);
+        })
+        .catch(error => {
+          console.error('Error al buscar el lugar:', error);
+          alert('Ocurrió un error al buscar el lugar.');
+        });
+    });
+  </script>
+</body>
+</html> -->

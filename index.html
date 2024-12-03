@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa con Distrito y Ciudad</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+      margin: 20px 0;
+    }
+    .coordinates {
+      margin-top: 10px;
+    }
+    input {
+      margin: 5px;
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mapa con Detalles de la Ubicación</h1>
+
+  <div id="map"></div>
+
+  <div class="coordinates">
+    <label>Latitud: <input type="text" id="latitude" readonly /></label>
+    <label>Longitud: <input type="text" id="longitude" readonly /></label>
+    <br>
+    <label>Nombre Principal: <input type="text" id="primaryName" readonly /></label>
+    <label>Dirección Completa: <input type="text" id="fullAddress" readonly /></label>
+    <label>Distrito: <input type="text" id="district" readonly /></label>
+    <label>Ciudad: <input type="text" id="city" readonly /></label>
+    <label>País: <input type="text" id="country" readonly /></label>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Inicializar el mapa centrado en Tacna
+    const map = L.map('map').setView([-17.93, -70.51], 13); // Coordenadas iniciales de Tacna
+
+    // Agregar el tile de OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Marcador dinámico
+    let marker;
+
+    map.on('click', function (e) {
+      const { lat, lng } = e.latlng;
+
+      // Actualizar marcador
+      if (marker) {
+        marker.setLatLng(e.latlng);
+      } else {
+        marker = L.marker(e.latlng).addTo(map);
+      }
+
+      // Actualizar coordenadas
+      document.getElementById('latitude').value = lat.toFixed(6);
+      document.getElementById('longitude').value = lng.toFixed(6);
+
+      // Buscar lugar cercano usando Nominatim con idioma español
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=es`)
+        .then(response => response.json())
+        .then(data => {
+          const address = data.address || {};
+
+          // Extraer información específica
+          let primaryName = data.name || null;
+          if (!primaryName && data.display_name) {
+            // Si no hay un campo `name`, tomar el primer segmento de `display_name`
+            primaryName = data.display_name.split(',')[0]; // Extrae solo el primer segmento
+          }
+
+          // Actualizar los campos
+          document.getElementById('primaryName').value = primaryName || 'No disponible';
+          document.getElementById('fullAddress').value = data.display_name || 'No disponible';
+          document.getElementById('district').value = address.suburb || address.village || address.town || 'No disponible';
+          document.getElementById('city').value = address.city || 'No disponible';
+          document.getElementById('country').value = address.country || 'No disponible';
+        })
+        .catch(error => {
+          console.error('Error al buscar lugar cercano:', error);
+          document.querySelectorAll('.coordinates input').forEach(input => {
+            input.value = 'Error';
+          });
+        });
+    });
+  </script>
+</body>
+</html>

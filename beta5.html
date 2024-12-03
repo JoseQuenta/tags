@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa Interactivo con Lugares Cercanos</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+      margin: 20px 0;
+    }
+    .coordinates {
+      margin-top: 10px;
+    }
+    .places {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    input, button {
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mapa Interactivo con Lugares Cercanos</h1>
+
+  <div id="map"></div>
+
+  <div class="coordinates">
+    <label>Latitud: <input type="text" id="latitude" readonly /></label>
+    <label>Longitud: <input type="text" id="longitude" readonly /></label>
+    <br>
+    <label>Lugar Cercano (Nominatim): <input type="text" id="nearbyPlace" readonly /></label>
+  </div>
+
+  <div class="places">
+    <h2>Lugares Cercanos (Overpass API)</h2>
+    <ul id="placesList"></ul>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Inicializar el mapa centrado en Tacna
+    const map = L.map('map').setView([-17.93, -70.51], 13); // Coordenadas iniciales de Tacna
+
+    // Agregar el tile de OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Marcador dinámico
+    let marker;
+
+    map.on('click', function (e) {
+      const { lat, lng } = e.latlng;
+
+      // Actualizar marcador
+      if (marker) {
+        marker.setLatLng(e.latlng);
+      } else {
+        marker = L.marker(e.latlng).addTo(map);
+      }
+
+      // Actualizar coordenadas
+      document.getElementById('latitude').value = lat.toFixed(6);
+      document.getElementById('longitude').value = lng.toFixed(6);
+
+      // Buscar lugar cercano usando Nominatim con idioma español
+      fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&accept-language=es`)
+        .then(response => response.json())
+        .then(data => {
+          const place = data.display_name || 'No se encontró información del lugar';
+          document.getElementById('nearbyPlace').value = place;
+        })
+        .catch(error => {
+          console.error('Error al buscar lugar cercano:', error);
+          document.getElementById('nearbyPlace').value = 'Error al buscar lugar cercano';
+        });
+
+      // Buscar lugares cercanos usando Overpass API
+      fetch('https://overpass-api.de/api/interpreter', {
+        method: 'POST',
+        body: `
+          [out:json];
+          node
+            [amenity]
+            (around:500,${lat},${lng}); // 500 metros alrededor de las coordenadas
+          out;
+        `
+      })
+        .then(response => response.json())
+        .then(data => {
+          const placesList = document.getElementById('placesList');
+          placesList.innerHTML = ''; // Limpiar la lista antes de mostrar nuevos resultados
+
+          if (data.elements && data.elements.length > 0) {
+            data.elements.forEach((place) => {
+              const li = document.createElement('li');
+              li.textContent = place.tags.name || 'Lugar sin nombre';
+              placesList.appendChild(li);
+            });
+          } else {
+            const li = document.createElement('li');
+            li.textContent = 'No se encontraron lugares cercanos.';
+            placesList.appendChild(li);
+          }
+        })
+        .catch(error => {
+          console.error('Error al buscar lugares cercanos con Overpass API:', error);
+          const placesList = document.getElementById('placesList');
+          placesList.innerHTML = '<li>Error al buscar lugares cercanos.</li>';
+        });
+    });
+  </script>
+</body>
+</html>

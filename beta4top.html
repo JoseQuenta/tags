@@ -1,0 +1,158 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mapa Interactivo con DMS y Buscador</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch/dist/geosearch.css" />
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+      margin: 20px 0;
+    }
+    .coordinates {
+      margin-top: 10px;
+    }
+    input, button {
+      margin: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Mapa Interactivo con Conversión DMS y Buscador</h1>
+
+  <div id="map"></div>
+
+  <div class="coordinates">
+    <label>Latitud (decimal): <input type="text" id="latitude" readonly /></label>
+    <label>Longitud (decimal): <input type="text" id="longitude" readonly /></label>
+    <br>
+    <label>Latitud (DMS): <input type="text" id="latitudeDMS" /></label>
+    <label>Longitud (DMS): <input type="text" id="longitudeDMS" /></label>
+    <br>
+    <button id="updateFromDMS">Actualizar desde DMS</button>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet-geosearch"></script>
+  <script>
+    // Inicializar el mapa centrado en Tacna
+    const map = L.map('map').setView([-17.93, -70.51], 13); // Coordenadas iniciales de Tacna
+
+    // Agregar el tile de OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Marcador dinámico
+    let marker;
+
+    map.on('click', function (e) {
+      const { lat, lng } = e.latlng;
+
+      // Actualizar marcador
+      if (marker) {
+        marker.setLatLng(e.latlng);
+      } else {
+        marker = L.marker(e.latlng).addTo(map);
+      }
+
+      // Actualizar coordenadas decimales y DMS
+      updateCoordinates(lat, lng);
+    });
+
+    // Función para actualizar los inputs de coordenadas
+    function updateCoordinates(lat, lng) {
+      // Actualizar coordenadas decimales
+      document.getElementById('latitude').value = lat.toFixed(6);
+      document.getElementById('longitude').value = lng.toFixed(6);
+
+      // Actualizar coordenadas en DMS
+      document.getElementById('latitudeDMS').value = toDMS(lat, 'lat');
+      document.getElementById('longitudeDMS').value = toDMS(lng, 'lng');
+    }
+
+    // Conversión de decimal a DMS
+    function toDMS(coordinate, type) {
+      const absolute = Math.abs(coordinate);
+      const degrees = Math.floor(absolute);
+      const minutesNotTruncated = (absolute - degrees) * 60;
+      const minutes = Math.floor(minutesNotTruncated);
+      const seconds = ((minutesNotTruncated - minutes) * 60).toFixed(2);
+      const direction =
+        type === 'lat'
+          ? coordinate >= 0 ? 'N' : 'S'
+          : coordinate >= 0 ? 'E' : 'W';
+
+      return `${degrees}° ${minutes}' ${seconds}" ${direction}`;
+    }
+
+    // Conversión de DMS a decimal
+    function fromDMS(dms) {
+      const parts = dms.match(/(\d+)[°]\s*(\d+)'?\s*(\d+(\.\d+)?)"?\s*([NSEW])/);
+      if (!parts) return null;
+
+      const degrees = parseFloat(parts[1]);
+      const minutes = parseFloat(parts[2]);
+      const seconds = parseFloat(parts[3]);
+      const direction = parts[5];
+
+      let decimal = degrees + minutes / 60 + seconds / 3600;
+      if (direction === 'S' || direction === 'W') decimal *= -1;
+
+      return decimal;
+    }
+
+    // Actualizar marcador desde DMS
+    document.getElementById('updateFromDMS').addEventListener('click', () => {
+      const latDMS = document.getElementById('latitudeDMS').value;
+      const lngDMS = document.getElementById('longitudeDMS').value;
+
+      const lat = fromDMS(latDMS);
+      const lng = fromDMS(lngDMS);
+
+      if (lat !== null && lng !== null) {
+        // Mover el marcador al punto seleccionado
+        map.setView([lat, lng], 15);
+        if (marker) {
+          marker.setLatLng([lat, lng]);
+        } else {
+          marker = L.marker([lat, lng]).addTo(map);
+        }
+
+        // Actualizar coordenadas decimales y DMS
+        updateCoordinates(lat, lng);
+      } else {
+        alert('Por favor, ingresa coordenadas en el formato correcto (ej: 17° 55\' 39.00" S).');
+      }
+    });
+
+    // Geocodificador con Autocompletado
+    const geocoder = new GeoSearch.GeoSearchControl({
+      provider: new GeoSearch.OpenStreetMapProvider(),
+      style: 'bar',
+      updateMap: true,
+      autoClose: true,
+      keepResult: true
+    });
+
+    map.addControl(geocoder);
+
+    map.on('geosearch/showlocation', function(result) {
+      const { x: lng, y: lat } = result.location;
+
+      // Mover el marcador al resultado de la búsqueda
+      if (marker) {
+        marker.setLatLng([lat, lng]);
+      } else {
+        marker = L.marker([lat, lng]).addTo(map);
+      }
+
+      // Actualizar coordenadas decimales y DMS
+      updateCoordinates(lat, lng);
+    });
+  </script>
+</body>
+</html> -->
