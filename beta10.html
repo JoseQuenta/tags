@@ -4,15 +4,61 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Imagen</title>
+  <title>Mapa + Marcado de Imagen</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch/dist/geosearch.css" />
-  
-  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    #map {
+      height: 500px;
+      width: 100%;
+      margin: 20px 0;
+    }
+
+    .coordinates {
+      margin-top: 20px;
+    }
+
+    .coordinates label {
+      display: inline-block;
+      margin: 5px 10px 5px 0;
+    }
+
+    input,
+    button {
+      margin: 5px;
+    }
+
+    /* Estilos para la sección de imagen */
+    .image-container {
+      margin: 20px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      text-align: center;
+    }
+
+    canvas {
+      display: block;
+      margin: 10px auto;
+      border: 1px solid #ddd;
+    }
+
+    .image-inputs input {
+      margin: 5px;
+    }
+  </style>
 </head>
 
 <body>
-  <h1>Imagen</h1>
+  <h1>Mapa Interactivo + Marcado de Imagen</h1>
 
   <!-- Sección del Mapa -->
   <h2>Mapa Interactivo</h2>
@@ -266,16 +312,7 @@
 
             markButton.addEventListener('click', () => {
               ctx.drawImage(img, 0, 0); // Redibujar la imagen base
-              ctx.font = '1.5em Arial'; //una consulta, px es la unica medida que se puede usar para el tamaño de la fuente? ... no, también se puede usar em, rem, %, etc.
-              //explicame cuando se usa cada uno de ellos
-              //px: es una medida absoluta, siempre será la misma independientemente del tamaño de la pantalla o del tamaño de la fuente base.
-              //em: es una medida relativa, se basa en el tamaño de la fuente base, por ejemplo, si la fuente base es 16px, 1em será igual a 16px, 2em será igual a 32px, etc.
-              //rem: es una medida relativa, se basa en el tamaño de la fuente del elemento raíz (html), por ejemplo, si la fuente del elemento raíz es 16px, 1rem será igual a 16px, 2rem será igual a 32px, etc.
-              //en el caso de las fotos, estas varian de tamano algunas son grandes, y al ser absolutas el tamano de letra puede quedar pequeno ...
-              //en ese caso se puede usar em o rem para que el tamano de la letra se ajuste al tamano de la foto
-              // cual sugieres que se use en este caso?
-
-
+              ctx.font = '20px Arial';
               ctx.fillStyle = 'white';
               ctx.textAlign = 'right';
               ctx.shadowColor = 'black';
